@@ -129,7 +129,15 @@
 
   /* Analysis sections */
   .analysis-section {
-    margin-bottom: 18px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .analysis-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
   }
 
   .analysis-section .section-label {
@@ -138,13 +146,21 @@
     color: var(--accent);
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
   .analysis-section .section-text {
     font-size: 14px;
-    line-height: 1.7;
+    line-height: 1.8;
     color: #b0b8c8;
+  }
+
+  .analysis-section .section-text p {
+    margin-bottom: 6px;
+  }
+
+  .analysis-section .section-text p:last-child {
+    margin-bottom: 0;
   }
 
   .overall-rating {
@@ -273,6 +289,12 @@ function metricBox(label, value) {
   return `<div class="metric-box"><div class="label">${label}</div><div class="value">${value}</div></div>`;
 }
 
+function splitIntoParagraphs(text) {
+  if (!text) return '';
+  const parts = text.split(/；|;/).map(s => s.trim()).filter(Boolean);
+  return parts.map(p => `<p>${p}</p>`).join('');
+}
+
 function renderLatest(item) {
   const r = item.run;
   const a = item.analysis;
@@ -284,7 +306,7 @@ function renderLatest(item) {
         <div class="latest-date">${item.date}</div>
         <div class="latest-name">${r.name}</div>
         <div class="analysis-section">
-          <div class="section-text">${a.raw_text}</div>
+          <div class="section-text">${splitIntoParagraphs(a.raw_text)}</div>
         </div>
       </div>`;
   }
@@ -307,17 +329,17 @@ function renderLatest(item) {
 
       <div class="analysis-section">
         <div class="section-label">步頻分析</div>
-        <div class="section-text">${a.cadence_analysis || ''}</div>
+        <div class="section-text">${splitIntoParagraphs(a.cadence_analysis)}</div>
       </div>
 
       <div class="analysis-section">
         <div class="section-label">效率分析</div>
-        <div class="section-text">${a.efficiency_analysis || ''}</div>
+        <div class="section-text">${splitIntoParagraphs(a.efficiency_analysis)}</div>
       </div>
 
       <div class="analysis-section">
         <div class="section-label">趨勢對比</div>
-        <div class="section-text">${a.comparison || ''}</div>
+        <div class="section-text">${splitIntoParagraphs(a.comparison)}</div>
       </div>
 
       <div class="analysis-section">
@@ -334,7 +356,7 @@ function renderHistoryItem(item, index) {
   const a = item.analysis;
 
   const detailHtml = a.raw_text
-    ? `<div class="section-text">${a.raw_text}</div>`
+    ? `<div class="section-text">${splitIntoParagraphs(a.raw_text)}</div>`
     : `
       <div class="metrics-grid">
         ${metricBox('距離', r.distance_km + ' km')}
@@ -346,15 +368,15 @@ function renderHistoryItem(item, index) {
       <div class="overall-rating">${a.overall_rating || ''}</div>
       <div class="analysis-section">
         <div class="section-label">步頻分析</div>
-        <div class="section-text">${a.cadence_analysis || ''}</div>
+        <div class="section-text">${splitIntoParagraphs(a.cadence_analysis)}</div>
       </div>
       <div class="analysis-section">
         <div class="section-label">效率分析</div>
-        <div class="section-text">${a.efficiency_analysis || ''}</div>
+        <div class="section-text">${splitIntoParagraphs(a.efficiency_analysis)}</div>
       </div>
       <div class="analysis-section">
         <div class="section-label">趨勢對比</div>
-        <div class="section-text">${a.comparison || ''}</div>
+        <div class="section-text">${splitIntoParagraphs(a.comparison)}</div>
       </div>
       <div class="analysis-section">
         <div class="section-label">改善建議</div>
