@@ -149,13 +149,124 @@
     border-radius: 10px;
     padding: 16px 20px;
     display: grid;
-    grid-template-columns: 90px 1fr repeat(4, 80px);
+    grid-template-columns: 90px 1fr repeat(4, 80px) 24px;
     align-items: center;
     gap: 12px;
     transition: border-color 0.15s;
+    cursor: pointer;
   }
 
   .run-row:hover { border-color: var(--accent); }
+
+  .run-toggle {
+    text-align: right;
+    color: var(--muted);
+    font-size: 12px;
+    transition: transform 0.2s;
+  }
+
+  .run-item.open .run-toggle { transform: rotate(180deg); color: var(--accent); }
+
+  .run-detail {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    margin-top: -8px;
+    padding: 20px;
+  }
+
+  .run-item.open .run-detail { display: block; }
+  .run-item.open .run-row { border-radius: 10px 10px 0 0; border-bottom: none; }
+
+  .run-detail .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .run-detail .metric-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .run-detail .metric-box .label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+
+  .run-detail .metric-box .value {
+    font-family: 'Space Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .run-detail .overall-rating {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--accent-dim);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+  }
+
+  .run-detail .analysis-section { margin-bottom: 14px; }
+
+  .run-detail .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  .run-detail .section-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #b0b8c8;
+  }
+
+  .run-detail .suggestions-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .run-detail .suggestions-list li {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #b0b8c8;
+  }
+
+  .run-detail .suggestions-list li::before {
+    content: '→';
+    color: var(--accent);
+    margin-right: 8px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .run-detail .no-analysis {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    padding: 12px;
+  }
+
+  @media (max-width: 700px) {
+    .run-detail .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  }
 
   .run-date {
     font-family: 'Space Mono', monospace;
@@ -316,40 +427,27 @@
 <div class="ai-card">
   <div class="ai-header">
     <span class="ai-badge">AI</span>
-    <h3>跑步分析與建議</h3>
+    <h3>AI 分析</h3>
   </div>
-  <div class="ai-body" id="aiBody">
-    <span style="color:var(--muted)">載入中，分析你的跑步數據...</span>
-  </div>
-  <div class="ai-input-row">
-    <input class="ai-input" id="aiInput" type="text" placeholder="問我任何跑步問題，例如：我的步頻正常嗎？">
-    <button class="ai-btn" id="aiBtn" onclick="askAI()">發問</button>
+  <div class="ai-body">
+    <span style="color:var(--muted)">點擊上方任一筆跑步紀錄，展開查看 AI 對該次跑步的步頻、效率分析與改善建議。</span>
   </div>
 </div>
 
 <script>
-// ── 真實數據（從 running_data.json 複製而來）──────────────────
-const DATA = {
-  "summary": {
-    "total_runs": 9,
-    "total_distance_km": 36.51,
-    "total_duration_min": 254.5,
-    "avg_distance_km": 4.06,
-    "avg_hr": 139.9,
-    "avg_cadence": 161.8
-  },
-  "runs": [
-    {"date":"2026-06-10","name":"Daan District Running","distance_km":4.09,"duration_min":30.2,"pace":"7'22\"","avg_hr":123,"max_hr":133,"calories":281,"avg_cadence":170.6,"elevation_gain_m":4,"avg_stride_length_m":79.3},
-    {"date":"2026-06-10","name":"Daan District Running","distance_km":1.81,"duration_min":15.1,"pace":"8'20\"","avg_hr":128,"max_hr":152,"calories":143,"avg_cadence":130.8,"elevation_gain_m":2,"avg_stride_length_m":92.3},
-    {"date":"2026-06-08","name":"Wenshan District Running","distance_km":6.01,"duration_min":40.1,"pace":"6'40\"","avg_hr":139,"max_hr":154,"calories":424,"avg_cadence":180.1,"elevation_gain_m":12,"avg_stride_length_m":82.7},
-    {"date":"2026-05-27","name":"Daan District Running","distance_km":1.91,"duration_min":11.9,"pace":"6'13\"","avg_hr":152,"max_hr":167,"calories":141,"avg_cadence":172.0,"elevation_gain_m":3,"avg_stride_length_m":93.0},
-    {"date":"2026-05-25","name":"Wenshan District Running","distance_km":5.77,"duration_min":35.6,"pace":"6'10\"","avg_hr":152,"max_hr":169,"calories":412,"avg_cadence":177.6,"elevation_gain_m":11,"avg_stride_length_m":90.3},
-    {"date":"2026-05-20","name":"Daan District Running","distance_km":2.62,"duration_min":26.2,"pace":"9'59\"","avg_hr":136,"max_hr":156,"calories":243,"avg_cadence":118.2,"elevation_gain_m":4,"avg_stride_length_m":84.4},
-    {"date":"2026-05-20","name":"Daan District Running","distance_km":1.62,"duration_min":12.0,"pace":"7'25\"","avg_hr":139,"max_hr":156,"calories":129,"avg_cadence":157.1,"elevation_gain_m":2,"avg_stride_length_m":87.0},
-    {"date":"2026-05-18","name":"Wenshan District Run Workout","distance_km":6.07,"duration_min":40.2,"pace":"6'36\"","avg_hr":142,"max_hr":157,"calories":426,"avg_cadence":177.5,"elevation_gain_m":10,"avg_stride_length_m":84.6},
-    {"date":"2026-05-15","name":"Wenshan District Run Workout","distance_km":6.61,"duration_min":43.2,"pace":"6'32\"","avg_hr":148,"max_hr":167,"calories":475,"avg_cadence":172.7,"elevation_gain_m":21,"avg_stride_length_m":87.4}
-  ]
-};
+// ── 動態載入跑步數據 ─────────────────────────────────────────
+let DATA = { summary: {}, runs: [] };
+
+async function loadRunningData() {
+  try {
+    const res = await fetch('running_data.json?t=' + Date.now());
+    if (res.ok) {
+      DATA = await res.json();
+    }
+  } catch (e) {
+    console.error('無法載入跑步數據', e);
+  }
+}
 
 // ── 渲染 Stats ────────────────────────────────────────────────
 function renderStats() {
@@ -475,102 +573,119 @@ function renderCharts() {
 }
 
 // ── 渲染跑步列表 ──────────────────────────────────────────────
+let ANALYSIS = { analyses: [] };
+
+async function loadAnalysis() {
+  try {
+    const res = await fetch('analysis.json?t=' + Date.now());
+    if (res.ok) {
+      ANALYSIS = await res.json();
+    }
+  } catch (e) {
+    console.error('無法載入分析數據', e);
+  }
+}
+
+function findAnalysis(activityId) {
+  return (ANALYSIS.analyses || []).find(a => a.activity_id === activityId);
+}
+
+function metricBox(label, value) {
+  return `<div class="metric-box"><div class="label">${label}</div><div class="value">${value}</div></div>`;
+}
+
+function renderAnalysisDetail(item) {
+  const r = item.run;
+  const a = item.analysis;
+
+  if (a.raw_text) {
+    return `<div class="analysis-section"><div class="section-text">${a.raw_text}</div></div>`;
+  }
+
+  return `
+    <div class="overall-rating">${a.overall_rating || ''}</div>
+    <div class="analysis-section">
+      <div class="section-label">步頻分析</div>
+      <div class="section-text">${a.cadence_analysis || ''}</div>
+    </div>
+    <div class="analysis-section">
+      <div class="section-label">效率分析</div>
+      <div class="section-text">${a.efficiency_analysis || ''}</div>
+    </div>
+    <div class="analysis-section">
+      <div class="section-label">趨勢對比</div>
+      <div class="section-text">${a.comparison || ''}</div>
+    </div>
+    <div class="analysis-section">
+      <div class="section-label">改善建議</div>
+      <ul class="suggestions-list">
+        ${(a.suggestions || []).map(s => `<li>${s}</li>`).join('')}
+      </ul>
+    </div>`;
+}
+
+function renderRunDetail(r) {
+  const metricsHtml = `
+    <div class="metrics-grid">
+      ${metricBox('距離', r.distance_km + ' km')}
+      ${metricBox('時間', r.duration_min + ' 分')}
+      ${metricBox('配速', r.pace)}
+      ${metricBox('心率', r.avg_hr + ' bpm')}
+      ${metricBox('步頻', Math.round(r.avg_cadence) + ' spm')}
+    </div>`;
+
+  const item = findAnalysis(r.activity_id);
+
+  if (!item) {
+    return metricsHtml + `<div class="no-analysis">這筆紀錄還沒有 AI 分析</div>`;
+  }
+
+  return metricsHtml + renderAnalysisDetail(item);
+}
+
 function renderList() {
   const el = document.getElementById('runList');
-  el.innerHTML = DATA.runs.map(r => `
-    <div class="run-row">
-      <div class="run-date">${r.date}</div>
-      <div class="run-name">${r.name}</div>
-      <div class="run-metric"><div class="val">${r.distance_km}</div><div class="lbl">km</div></div>
-      <div class="run-metric"><div class="val">${r.pace}</div><div class="lbl">配速</div></div>
-      <div class="run-metric"><div class="val">${r.avg_hr}</div><div class="lbl">心率</div></div>
-      <div class="run-metric"><div class="val">${Math.round(r.avg_cadence)}</div><div class="lbl">步頻</div></div>
+  el.innerHTML = DATA.runs.map((r, i) => `
+    <div class="run-item" id="run-item-${i}">
+      <div class="run-row" onclick="toggleRun(${i})">
+        <div class="run-date">${r.date}</div>
+        <div class="run-name">${r.name}</div>
+        <div class="run-metric"><div class="val">${r.distance_km}</div><div class="lbl">km</div></div>
+        <div class="run-metric"><div class="val">${r.pace}</div><div class="lbl">配速</div></div>
+        <div class="run-metric"><div class="val">${r.avg_hr}</div><div class="lbl">心率</div></div>
+        <div class="run-metric"><div class="val">${Math.round(r.avg_cadence)}</div><div class="lbl">步頻</div></div>
+        <div class="run-toggle">▾</div>
+      </div>
+      <div class="run-detail" id="run-detail-${i}"></div>
     </div>
   `).join('');
 }
 
-// ── AI 分析 ───────────────────────────────────────────────────
-const SYSTEM_PROMPT = `你是一位專業跑步教練，擅長分析 Garmin 數據並給出具體改善建議。
-用繁體中文回覆，語氣親切專業。
-以下是這位跑者最近的數據：
-${JSON.stringify(DATA, null, 2)}
+function toggleRun(i) {
+  const item = document.getElementById(`run-item-${i}`);
+  const detail = document.getElementById(`run-detail-${i}`);
+  const isOpen = item.classList.contains('open');
 
-請根據數據給出具體觀察，不要說廢話。`;
-
-let conversationHistory = [];
-
-async function callClaude(userMessage) {
-  conversationHistory.push({ role: "user", content: userMessage });
-
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1000,
-      system: SYSTEM_PROMPT,
-      messages: conversationHistory
-    })
-  });
-
-  const data = await response.json();
-  const reply = data.content?.find(b => b.type === "text")?.text || "無法取得回應";
-  conversationHistory.push({ role: "assistant", content: reply });
-  return reply;
-}
-
-function renderAIResponse(text) {
-  // 把換行轉成列表項目
-  const lines = text.split('\n').filter(l => l.trim());
-  const html = lines.map(line => {
-    if (line.startsWith('•') || line.startsWith('-') || line.startsWith('*')) {
-      return `<li>${line.replace(/^[•\-\*]\s*/, '')}</li>`;
-    }
-    return `<p>${line}</p>`;
-  });
-
-  const hasLi = html.some(h => h.startsWith('<li>'));
-  if (hasLi) {
-    return html.map(h => h.startsWith('<li>') ? h : h).join('').replace(/(<li>.*<\/li>)/gs, '<ul>$&</ul>');
-  }
-  return html.join('');
-}
-
-async function askAI(initialPrompt = null) {
-  const input = document.getElementById('aiInput');
-  const btn = document.getElementById('aiBtn');
-  const body = document.getElementById('aiBody');
-
-  const message = initialPrompt || input.value.trim();
-  if (!message) return;
-
-  input.value = '';
-  btn.disabled = true;
-  body.innerHTML = `<span style="color:var(--muted)">分析中 <span class="loading-dot">▌</span></span>`;
-
-  try {
-    const reply = await callClaude(message);
-    body.innerHTML = renderAIResponse(reply);
-  } catch (e) {
-    body.innerHTML = `<span style="color:var(--red)">連線失敗，請確認網路狀況</span>`;
+  if (!isOpen && !detail.dataset.loaded) {
+    detail.innerHTML = renderRunDetail(DATA.runs[i]);
+    detail.dataset.loaded = 'true';
   }
 
-  btn.disabled = false;
+  item.classList.toggle('open');
 }
 
 // ── 初始化 ────────────────────────────────────────────────────
 document.getElementById('updated').textContent = `更新時間\n${new Date().toLocaleDateString('zh-TW')}`;
 
-document.getElementById('aiInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') askAI();
-});
+async function init() {
+  await loadRunningData();
+  await loadAnalysis();
+  renderStats();
+  renderCharts();
+  renderList();
+}
 
-renderStats();
-renderCharts();
-renderList();
-
-// 自動產生初始 AI 分析
-askAI("請分析我最近的跑步數據，找出 2-3 個具體問題，並給出改善建議。");
+init();
 </script>
 </body>
 </html>
