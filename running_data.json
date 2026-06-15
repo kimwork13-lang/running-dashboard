@@ -1,14 +1,15 @@
 {
   "summary": {
-    "total_runs": 9,
-    "total_distance_km": 36.51,
-    "total_duration_min": 254.5,
-    "avg_distance_km": 4.06,
-    "avg_hr": 139.9,
-    "avg_cadence": 161.8
+    "total_runs": 8,
+    "total_distance_km": 29.9,
+    "total_duration_min": 211.3,
+    "avg_distance_km": 3.74,
+    "avg_hr": 138.9,
+    "avg_cadence": 160.5
   },
   "runs": [
     {
+      "activity_id": 23199328146,
       "date": "2026-06-10",
       "name": "Daan District Running",
       "distance_km": 4.09,
@@ -22,6 +23,7 @@
       "avg_stride_length_m": 79.32000122070313
     },
     {
+      "activity_id": 23198782052,
       "date": "2026-06-10",
       "name": "Daan District Running",
       "distance_km": 1.81,
@@ -35,6 +37,7 @@
       "avg_stride_length_m": 92.34000244140626
     },
     {
+      "activity_id": 23174891807,
       "date": "2026-06-08",
       "name": "Wenshan District Running",
       "distance_km": 6.01,
@@ -48,6 +51,7 @@
       "avg_stride_length_m": 82.70999755859376
     },
     {
+      "activity_id": 23030547079,
       "date": "2026-05-27",
       "name": "Daan District Running",
       "distance_km": 1.91,
@@ -61,6 +65,7 @@
       "avg_stride_length_m": 93.0
     },
     {
+      "activity_id": 23007962500,
       "date": "2026-05-25",
       "name": "Wenshan District Running",
       "distance_km": 5.77,
@@ -74,6 +79,7 @@
       "avg_stride_length_m": 90.32999877929689
     },
     {
+      "activity_id": 22947843979,
       "date": "2026-05-20",
       "name": "Daan District Running",
       "distance_km": 2.62,
@@ -87,6 +93,7 @@
       "avg_stride_length_m": 84.35000000000001
     },
     {
+      "activity_id": 22946851557,
       "date": "2026-05-20",
       "name": "Daan District Running",
       "distance_km": 1.62,
@@ -100,6 +107,7 @@
       "avg_stride_length_m": 87.04000244140626
     },
     {
+      "activity_id": 22922313668,
       "date": "2026-05-18",
       "name": "Wenshan District - Run Workout (2)",
       "distance_km": 6.07,
@@ -111,19 +119,6 @@
       "avg_cadence": 177.546875,
       "elevation_gain_m": 10.0,
       "avg_stride_length_m": 84.55999755859375
-    },
-    {
-      "date": "2026-05-15",
-      "name": "Wenshan District - Run Workout (2)",
-      "distance_km": 6.61,
-      "duration_min": 43.2,
-      "pace": "6'32\"",
-      "avg_hr": 148.0,
-      "max_hr": 167.0,
-      "calories": 475.0,
-      "avg_cadence": 172.6875,
-      "elevation_gain_m": 21.0,
-      "avg_stride_length_m": 87.42000122070313
     }
   ]
 }
