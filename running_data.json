@@ -1,13 +1,27 @@
 {
   "summary": {
-    "total_runs": 8,
-    "total_distance_km": 29.9,
-    "total_duration_min": 211.3,
-    "avg_distance_km": 3.74,
-    "avg_hr": 138.9,
-    "avg_cadence": 160.5
+    "total_runs": 9,
+    "total_distance_km": 36.92,
+    "total_duration_min": 256.6,
+    "avg_distance_km": 4.1,
+    "avg_hr": 139.6,
+    "avg_cadence": 162.8
   },
   "runs": [
+    {
+      "activity_id": 23268045801,
+      "date": "2026-06-16",
+      "name": "Wenshan District Running",
+      "distance_km": 7.02,
+      "duration_min": 45.3,
+      "pace": "6'27\"",
+      "avg_hr": 145.0,
+      "max_hr": 162.0,
+      "calories": 507.0,
+      "avg_cadence": 180.9375,
+      "elevation_gain_m": 18.0,
+      "avg_stride_length_m": 85.20999755859376
+    },
     {
       "activity_id": 23199328146,
       "date": "2026-06-10",
